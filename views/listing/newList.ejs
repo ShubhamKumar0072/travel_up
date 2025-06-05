@@ -1,0 +1,42 @@
+<% layout("/layouts/boilerplate") %>
+    <br>
+    <div class="row">
+        <div class="col-9 offset-1">
+    <form method="post" action="/listings" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control " id="title" name="title" placeholder="Enter a catchy title" required>
+            <div class="valid-feedback">Looks Good!</div>
+            <div class="invalid-feedback">Title is Required</div>
+        </div>
+        <div class="mb-3">
+            <label for="dec" class="form-label">Description</label>
+            <textarea name="description" id="dec" class="form-control" required></textarea>
+            <div class="invalid-feedback">Write a short Description</div>
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Image Link</label>
+            <input name="image" type="text" id="image" class="form-control" placeholder="image URL">
+        </div>
+        <div class="row" style="margin-left: 0;">
+        <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Price</label>   
+            <input name="price" type="text" id="price" class="form-control" placeholder="1200" required>
+            <div class="invalid-feedback">Price should be valid</div>        
+        </div>
+        <div class="mb-3 col-md-8">
+            <label for="contry" class="form-label">Country</label> 
+            <input name="country" type="text" id="contry" class="form-control" placeholder="India" required>
+            <div class="invalid-feedback">Country is Required</div>
+        </div>
+        </div>
+        <div class="mb-3">
+            <label for="loca" class="form-label">Location</label> 
+            <input name="location" type="text" id="location" class="form-control" placeholder="Jaypur, Rajasthan" required>
+            <div class="invalid-feedback">Location is Required</div>
+        </div>
+        <button class="btn add-btn mb-3">Add</button>
+    </form>
+        </div>
+    </div>
+
