@@ -24,6 +24,7 @@ router.post("/",asyncWrap(async(req,res,next)=>{
         throw new MyError(400,result.error);
     }
     await Listing.insertOne(data);
+    req.flash("success","New Listing Created");
     res.redirect("/listings");
 }));
 
@@ -31,14 +32,25 @@ router.post("/",asyncWrap(async(req,res,next)=>{
 router.get("/:id",asyncWrap(async(req,res,next)=>{
     let {id} = req.params;
     let listing = await Listing.findById(id).populate("reviews");
-    res.render("./listing/show.ejs",{listing});
+    if(!listing){
+        req.flash("error","Listing you are tring to reach, no longer exists");
+        res.redirect("/listings");
+    }else{
+        res.render("./listing/show.ejs",{listing});
+    }
 }));
 
 //Form of edit listing
 router.get("/:id/edit",asyncWrap(async(req,res,next)=>{
     let {id} = req.params;
     let listing = await Listing.findById(id);
-    res.render("listing/edit.ejs",{listing}); 
+    if(!listing){
+        req.flash("error","Listing you are tring to reach, no longer exists");
+        res.redirect("/listings");
+    }else{
+        res.render("listing/edit.ejs",{listing});
+    }
+    
 }));
 
 //Edit the list in DB
@@ -46,6 +58,7 @@ router.put("/:id",asyncWrap(async(req,res,next)=>{
     let {id} = req.params;
     let data = req.body;
     await Listing.findByIdAndUpdate(id,data);
+    req.flash("success","Listing Updated successfully");
     res.redirect(`/listings/${id}`);
 }));
 
@@ -53,6 +66,7 @@ router.put("/:id",asyncWrap(async(req,res,next)=>{
 router.delete("/:id",asyncWrap(async(req,res,next)=>{
     let {id} = req.params;
     await Listing.findByIdAndDelete(id);
+    req.flash("success","Listing Deleted!");
     res.redirect("/listings");
 }));
 
