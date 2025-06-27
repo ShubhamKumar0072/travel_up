@@ -7,6 +7,9 @@ const ejsMate = require("ejs-mate"); // to combile diff ejs files
 const session = require("express-session");
 const flash = require("connect-flash");
 
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 
 app.engine('ejs', ejsMate);
 
@@ -39,6 +42,13 @@ async function main() {
   await mongoose.connect('mongodb://127.0.0.1:27017/travel_up');
 }
 
+//setup passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 //Root Rout
@@ -46,20 +56,25 @@ app.get("/",(req,res)=>{
     res.send("Home Page");
 });
 
-//flash Massages
+//flash Massages (Info inside req.local to use it in every ejs file)
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
+    res.locals.currUser = req.user;
     next();
 });
 
+//User Rout
+const userRouter = require("./routes/user");
+app.use("/user",userRouter);
+
 //Listings Routes
-const listing = require("./routes/listing");
-app.use("/listings",listing);
+const listingRouter = require("./routes/listing");
+app.use("/listings",listingRouter);
 
 //Reviews Routes
-const review = require("./routes/review");
-app.use("/listings/:id/reviews",review);
+const reviewRouter = require("./routes/review");
+app.use("/listings/:id/reviews",reviewRouter);
 
 
 //Error handler middleware
