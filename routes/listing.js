@@ -33,7 +33,7 @@ router.post("/",isLoggedIn,asyncWrap(async(req,res,next)=>{
 //To show perticular listing
 router.get("/:id",asyncWrap(async(req,res,next)=>{
     let {id} = req.params;
-    let listing = await Listing.findById(id).populate("reviews").populate("owner");
+    let listing = await Listing.findById(id).populate({path : "reviews",populate:{path: "author"}}).populate("owner");
     if(!listing){
         req.flash("error","Listing you are tring to reach, no longer exists");
         res.redirect("/listings");
