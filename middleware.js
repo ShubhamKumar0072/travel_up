@@ -1,5 +1,17 @@
 const Listing = require("./models/listing");
 const Review = require("./models/review");
+const MyError = require("./util/myError");
+const {reviewSchema} = require("./schema");
+
+module.exports.validateReview = (req,res,next) =>{
+    let{error} = reviewSchema.validate(req.body);
+    if(error){
+        let errMsg = error.details.map((el)=>el.message).join(",");
+        throw new MyError(400,errMsg);
+    }else{
+        next();
+    }
+};
 
 module.exports.isLoggedIn = (req,res,next) => {
     if(!req.isAuthenticated()){
