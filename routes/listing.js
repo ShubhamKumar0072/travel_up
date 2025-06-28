@@ -4,7 +4,7 @@ const MyError = require("../util/myError");
 const asyncWrap = require("../util/asyncWrap");
 const Listing = require("../models/listing");
 const {listingSchema} = require("../schema");
-const { isLoggedIn } = require("../middleware");
+const { isLoggedIn, isOwner } = require("../middleware");
 
 //To Show all listed hotels
 router.get("/",asyncWrap(async(req,res,next)=>{
@@ -24,6 +24,7 @@ router.post("/",isLoggedIn,asyncWrap(async(req,res,next)=>{
     if(result.error){
         throw new MyError(400,result.error);
     }
+    data.owner = req.user._id;
     await Listing.insertOne(data);
     req.flash("success","New Listing Created");
     res.redirect("/listings");
@@ -32,7 +33,7 @@ router.post("/",isLoggedIn,asyncWrap(async(req,res,next)=>{
 //To show perticular listing
 router.get("/:id",asyncWrap(async(req,res,next)=>{
     let {id} = req.params;
-    let listing = await Listing.findById(id).populate("reviews");
+    let listing = await Listing.findById(id).populate("reviews").populate("owner");
     if(!listing){
         req.flash("error","Listing you are tring to reach, no longer exists");
         res.redirect("/listings");
@@ -42,7 +43,7 @@ router.get("/:id",asyncWrap(async(req,res,next)=>{
 }));
 
 //Form of edit listing
-router.get("/:id/edit",isLoggedIn,asyncWrap(async(req,res,next)=>{
+router.get("/:id/edit",isLoggedIn,isOwner, asyncWrap(async(req,res,next)=>{
     let {id} = req.params;
     let listing = await Listing.findById(id);
     if(!listing){
@@ -55,7 +56,7 @@ router.get("/:id/edit",isLoggedIn,asyncWrap(async(req,res,next)=>{
 }));
 
 //Edit the list in DB
-router.put("/:id",isLoggedIn,asyncWrap(async(req,res,next)=>{
+router.put("/:id",isLoggedIn, isOwner, asyncWrap(async(req,res,next)=>{
     let {id} = req.params;
     let data = req.body;
     await Listing.findByIdAndUpdate(id,data);
@@ -64,7 +65,7 @@ router.put("/:id",isLoggedIn,asyncWrap(async(req,res,next)=>{
 }));
 
 //Delete the list
-router.delete("/:id",isLoggedIn, asyncWrap(async(req,res,next)=>{
+router.delete("/:id",isLoggedIn,isOwner, asyncWrap(async(req,res,next)=>{
     let {id} = req.params;
     await Listing.findByIdAndDelete(id);
     req.flash("success","Listing Deleted!");
