@@ -72,10 +72,10 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-// //Root Rout
-// app.get("/",(req,res)=>{
-//     res.send("Home Page");
-// });
+//Root Rout
+app.get("/",(req,res)=>{
+    res.redirect("/listings");
+});
 
 //flash Massages (Info inside req.local to use it in every ejs file)
 app.use((req,res,next)=>{
