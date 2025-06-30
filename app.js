@@ -1,3 +1,8 @@
+if(process.env.NODE_ENV != "production"){
+    require('dotenv').config();
+}
+
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -5,6 +10,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // to combile diff ejs files
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash");
 
 const passport = require("passport");
@@ -20,8 +26,33 @@ app.set("views",path.join(__dirname,"views"));
 app.use(express.static(path.join(__dirname,"public")));
 app.use(flash());
 
+//Setup MongoDB
+const DBurl = process.env.ATLUSDB_URL;
+main().then(()=>{
+    console.log ("connected successfully");
+})
+.catch(err => console.log(err));
+
+async function main() {
+  await mongoose.connect(DBurl);
+}
+
+//sessions setup
+const store = MongoStore.create({
+     mongoUrl: DBurl,
+     crypto: {
+        secret: process.env.SECRET,
+     },
+     touchAfter: 24*3600,
+});
+
+store.on("error",()=>{
+    console.log("error in session store:",err);
+});
+
 const sessionOption = {
-    secret: 'mysecret',
+    store,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -31,16 +62,6 @@ const sessionOption = {
     },
 };
 app.use(session(sessionOption));
-
-//Setup MongoDB
-main().then(()=>{
-    console.log ("connected successfully");
-})
-.catch(err => console.log(err));
-
-async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/travel_up');
-}
 
 //setup passport
 app.use(passport.initialize());

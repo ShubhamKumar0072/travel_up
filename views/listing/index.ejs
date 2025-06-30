@@ -3,7 +3,7 @@
     <% for(listing of data){ %>
         <div class="card cols listing-card" >
             <a href="/listings/<%= listing._id %>" class="card-link">
-                <img src="<%= listing.image %>" class="card-img-top" alt="Image">
+                <img src="<%= listing.image.url %>" class="card-img-top" alt="Image">
                 <div class="card-img-overlay"></div>
                 <div class="card-body">
                     <p class="card-title"><b><%= listing.title %></b></p>

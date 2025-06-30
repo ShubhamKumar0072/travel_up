@@ -12,12 +12,12 @@ module.exports.renderNewForm = (req,res)=>{
 };
 
 module.exports.createListing = async(req,res,next)=>{
+    let url = req.file.path;
+    let fileName = req.file.filename;
+    console.log(url+"..."+fileName);
     let data = req.body;
-    let result = listingSchema.validate({ listing: data });
-    if(result.error){
-        throw new MyError(400,result.error);
-    }
     data.owner = req.user._id;
+    data.image = {url,fileName};
     await Listing.insertOne(data);
     req.flash("success","New Listing Created");
     res.redirect("/listings");
@@ -49,7 +49,13 @@ module.exports.renderEditForm = async(req,res,next)=>{
 module.exports.editListing = async(req,res,next)=>{
     let {id} = req.params;
     let data = req.body;
-    await Listing.findByIdAndUpdate(id,data);
+    let listing = await Listing.findByIdAndUpdate(id,data);
+    if(typeof req.file !== "undefined"){
+        let url = req.file.path;
+        let fileName = req.file.filename;
+        listing.image = {url,fileName};
+        await listing.save();
+    }
     req.flash("success","Listing Updated successfully");
     res.redirect(`/listings/${id}`);
 };

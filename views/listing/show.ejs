@@ -2,7 +2,7 @@
     <div class="show">
         <div class="details">
             <p><b><%= listing.title %></b>  <br></p>
-            <img src="<%= listing.image %>" alt="Image" class="show-img">
+            <img src="<%= listing.image.url %>" alt="Image" class="show-img">
             <p>
                 <b>Owner : <%= listing.owner.username%></b><br>
                 <%= listing.description %> <br>
@@ -48,7 +48,9 @@
             </div>
             <hr>
             <% } %>
+            <% if(listing.reviews.length > 0){ %>
             <p><b>All Reviews</b></p>
+            <% } %>
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <% for(let review of listing.reviews) { %>
                     <div class="col mb-3">

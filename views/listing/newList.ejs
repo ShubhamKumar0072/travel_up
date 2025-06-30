@@ -2,7 +2,7 @@
     <br>
     <div class="row">
         <div class="col-9 offset-1">
-    <form method="post" action="/listings" class="needs-validation" novalidate>
+    <form method="post" action="/listings" class="needs-validation" enctype="multipart/form-data" novalidate>
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input type="text" class="form-control " id="title" name="title" placeholder="Enter a catchy title" required>
@@ -13,10 +13,11 @@
             <label for="dec" class="form-label">Description</label>
             <textarea name="description" id="dec" class="form-control" required></textarea>
             <div class="invalid-feedback">Write a short Description</div>
-        </div>
+        </div>    
         <div class="mb-3">
-            <label for="image" class="form-label">Image Link</label>
-            <input name="image" type="text" id="image" class="form-control" placeholder="image URL">
+            <label for="image" class="form-label">Image</label>
+            <input name="image" type="file" id="image" class="form-control" required>
+            <div class="invalid-feedback">Image is Required</div>
         </div>
         <div class="row" style="margin-left: 0;">
         <div class="mb-3 col-md-4">
