@@ -10,7 +10,6 @@ html,body{
 }
 
 .navbar{
-    height: 5rem;
     background-color: white;
 }
 
@@ -113,4 +112,11 @@ html,body{
     display: flex;
     gap: 1.5rem;
     justify-content: left;
+}
+
+
+/* NavbarL */
+
+.topNav{
+    text-align: left;
 }
